@@ -47,19 +47,19 @@ class Bounder(tk.Tk):
         self.w.bind( "<B1-Motion>", self.startRect)
         self.w.bind( "<ButtonRelease-1>", self.setRect)
         nextImageBut = tk.Button(self, text = "Next Image", command = self.nextImage, anchor = "s", bg='#388E8E')
-        nextImageBut.configure(width = 10, activebackground = "#D1EEEE", relief = tk.FLAT)
-        nextImageBut = self.w.create_window(10, 10, anchor="nw", window=nextImageBut)
+        nextImageBut.configure(width = 15, activebackground = "#D1EEEE", relief = tk.FLAT)
+        nextImageBut = self.w.create_window(self.canvas_height/2+70, self.canvas_height/2+self.scaled_im_height/2+20, anchor="nw", window=nextImageBut)
         
         prevImageBut = tk.Button(self, text = "Previous Image", command = self.prevImage, anchor = "s", bg='#388E8E')
-        prevImageBut.configure(width = 10, activebackground = "#D1EEEE", relief = tk.FLAT)
-        prevImageBut = self.w.create_window(10, 55, anchor="nw", window=prevImageBut)
+        prevImageBut.configure(width = 15, activebackground = "#D1EEEE", relief = tk.FLAT)
+        prevImageBut = self.w.create_window(self.canvas_height/2-70, self.canvas_height/2+self.scaled_im_height/2+20, anchor="nw", window=prevImageBut)
         
         browseInputBut = tk.Button(self, text = "Directory With Images", command = self.browseInput, anchor = "s", bg='#388E8E')
-        browseInputBut.configure(width = 10, activebackground = "#D1EEEE", relief = tk.FLAT)
+        browseInputBut.configure(width = 20, activebackground = "#D1EEEE", relief = tk.FLAT)
         browseInputBut = self.w.create_window(10, 95, anchor="nw", window=browseInputBut)
         
         browseOutputBut = tk.Button(self, text = "Output bbox Coords", command = self.browseOutput, anchor = "s", bg='#388E8E')
-        browseOutputBut.configure(width = 10, activebackground = "#D1EEEE", relief = tk.FLAT)
+        browseOutputBut.configure(width = 20, activebackground = "#D1EEEE", relief = tk.FLAT)
         browseOutputBut = self.w.create_window(10, 135, anchor="nw", window=browseOutputBut)
         
         saveBut = tk.Button(self, text = "Save Coords", command = self.save, anchor = "s", bg='#388E8E')
@@ -95,11 +95,24 @@ class Bounder(tk.Tk):
         print("Width "+str(w))
         print(self.scaled_im.size)
     
-    
+    # Issues: startlocations  are skewed when began out of the image
+    # Issues: need to check width , height + x, y to make sure box does not extend out
+    # Issues: Not start at 1st image
     def startRect(self, event):
-        if self.drawing == False and self.checkStartLocation(event.x, event.y):
-            self.x0 = event.x
-            self.y0 = event.y
+        if self.drawing == False:
+            if event.x < self.canvas_width/2 - self.scaled_im_width/2:
+                self.x0 = self.canvas_width/2 - self.scaled_im_width/2
+            elif event.x > self.canvas_width/2 + self.scaled_im_width/2:
+                self.x0 = self.canvas_width/2 + self.scaled_im_width/2
+            else:
+                self.x0 = event.x
+            
+            if event.y < self.canvas_height/2 - self.scaled_im_height/2:
+                self.y0 = self.canvas_height/2 - self.scaled_im_height/2
+            elif event.y > self.canvas_height/2 + self.scaled_im_height/2:
+                self.y0 = self.canvas_height/2 + self.scaled_im_height/2
+            else:            
+                self.y0 = event.y
             self.drawing = True
         
         if self.drawing == True:   
@@ -178,6 +191,13 @@ class Bounder(tk.Tk):
         rel_y0 = min(self.y0, self.y1) - topy
         rel_width = max(self.x0, self.x1) - min(self.x0, self.x1)
         rel_height = max(self.y0, self.y1) - min(self.y0, self.y1)
+        if rel_x0 < 0:
+            rel_width = rel_width + rel_x0
+            rel_x0 = 0
+        if rel_y0 < 0:
+            rel_height = rel_height + rel_y0
+            rel_y0 = 0
+        
         self.scaledBbox = self.scaleBbox(rel_x0, rel_y0, rel_width, rel_height)
         
         
@@ -192,6 +212,7 @@ class Bounder(tk.Tk):
         return (x, y, width, height)
     
     def nextImage(self):
+        self.w.delete(self.bbox)
         if self.images_path == None:
             print('Browse to image directory!')
         else:
