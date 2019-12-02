@@ -1,12 +1,20 @@
 # bboxLabeler
 Python application to quickly and easily label images with bounding boxes for object detection. This 
-will output a pickle file where the index is the name of the name of the image 
-and will story the x & y of the upper left corner, height and width.
+will output a JSON file for each image you label. The JSON file will be in the following format.
+{
+   'xmin'  : 10,
+   'ymin'  : 25,
+   'xmax'  : 45, 
+   'ymax'  : 60,
+   'path'  : "c:\usr\Desktop\project\empire-state\empirestate.jpg",
+   'image' : "empirestate.jpg",
+   'label' : "Empire State Building"
+}
 
 ## Dependencies
 * Tkinter
 * OS
-* Pandas
+* JSON
 * PIL
 
 ## Installation 
@@ -22,10 +30,10 @@ $ python bboxLabeler.py
 1. Use File Explorer to browse to directory containing the library of images to be labeled. 
    - Note that this applciation will not alter images in any way. This will simply store the location of the bounding box on the image. 
    - If you resize the images after recording the bounding box location that the coordinates will need to be transformed.
-   ![GitHub Logo](https://github.com/nedhulseman/image-labeleling-app/blob/master/Step1.JPG)
-2. Use File Explorer to browse to directory where the saved picle file is or if new, where you would like to store the output pickle file
-3. Once image is loaded, draw box on image. Once you hit the 'Next Image' or 'Save' button, the coordinates are recorded in the DataFrame. If you select 'Previous Image', the coordinates will be erased for that image.
-3. Make sure to save any progress before exiting
-4. If you want to continue from a previous section, make sure to add the path using "Output bbox Coordinates" file browser
+   ![Step 1: Select directory](https://github.com/nedhulseman/image-labeleling-app/blob/master/Step1.JPG)
+2. Draw the Bounding box on your image in the desired location
+![Step 2: Draw Bounding Box](https://github.com/nedhulseman/image-labeleling-app/blob/master/Step2.JPG)
+3. Select the button 'Next Image' to navigate to the next image and the current image bounding box information will be saved to a JSON with the same name as the image.
+![Step 3: Select next to save information and move to next image](https://github.com/nedhulseman/image-labeleling-app/blob/master/Step3.JPG)
 
 
