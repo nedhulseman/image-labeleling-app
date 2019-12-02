@@ -22,6 +22,7 @@ $ python bboxLabeler.py
 1. Use File Explorer to browse to directory containing the library of images to be labeled. 
    - Note that this applciation will not alter images in any way. This will simply store the location of the bounding box on the image. 
    - If you resize the images after recording the bounding box location that the coordinates will need to be transformed.
+   ![GitHub Logo](https://github.com/nedhulseman/image-labeleling-app/blob/master/Step1.JPG)
 2. Use File Explorer to browse to directory where the saved picle file is or if new, where you would like to store the output pickle file
 3. Once image is loaded, draw box on image. Once you hit the 'Next Image' or 'Save' button, the coordinates are recorded in the DataFrame. If you select 'Previous Image', the coordinates will be erased for that image.
 3. Make sure to save any progress before exiting
